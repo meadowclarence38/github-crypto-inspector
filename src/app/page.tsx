@@ -20,8 +20,11 @@ export default function HomePage() {
 
         {/* Main CTA Cards */}
         <div className="grid md:grid-cols-2 gap-6 mb-12">
-          {/* Comprehensive Analysis Card */}
-          <Link href="/analyze" className="group card card-hover p-8 transition-all animate-slide-up">
+          {/* V2 Advanced Analysis Card */}
+          <Link href="/v2/analyze" className="group card card-hover p-8 transition-all animate-slide-up relative">
+            <span className="absolute top-4 right-4 px-2 py-0.5 rounded text-xs font-semibold bg-crypto-accent text-white">
+              V2.0 NEW
+            </span>
             <div className="flex items-start justify-between mb-4">
               <div className="p-3 rounded-lg bg-crypto-accent/10 text-crypto-accent">
                 <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -32,9 +35,27 @@ export default function HomePage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
             </div>
-            <h2 className="text-xl font-semibold text-crypto-text mb-2">Comprehensive Analysis</h2>
+            <h2 className="text-xl font-semibold text-crypto-text mb-2">Advanced Analysis</h2>
             <p className="text-crypto-muted text-sm leading-relaxed">
-              Paste any GitHub repo and run custom checks: activity tracking, fork detection, contributor analysis, and innovation scoring.
+              Deep insights with fork originality scoring, activity dashboards with charts, security scans, and health metrics.
+            </p>
+          </Link>
+
+          {/* V1 Basic Analysis Card */}
+          <Link href="/analyze" className="group card card-hover p-8 transition-all animate-slide-up">
+            <div className="flex items-start justify-between mb-4">
+              <div className="p-3 rounded-lg bg-crypto-textDim/10 text-crypto-textDim">
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+              </div>
+              <svg className="w-5 h-5 text-crypto-muted group-hover:text-crypto-accent group-hover:translate-x-1 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </div>
+            <h2 className="text-xl font-semibold text-crypto-text mb-2">Basic Analysis</h2>
+            <p className="text-crypto-muted text-sm leading-relaxed">
+              Quick checks: activity tracking, fork detection, contributor analysis, and innovation scoring.
             </p>
           </Link>
 

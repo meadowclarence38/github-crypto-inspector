@@ -28,11 +28,15 @@ export default function RootLayout({
                 </span>
               </Link>
               <div className="flex items-center gap-6">
+                <Link href="/v2/analyze" className="text-crypto-accent hover:text-crypto-accentHover text-sm font-semibold flex items-center gap-1">
+                  Advanced
+                  <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-crypto-accent text-white">V2</span>
+                </Link>
                 <Link href="/analyze" className="text-crypto-textDim hover:text-crypto-accent text-sm font-medium">
-                  Analyze
+                  Basic
                 </Link>
                 <Link href="/inspect" className="text-crypto-textDim hover:text-crypto-accent text-sm font-medium">
-                  PoW Inspect
+                  PoW
                 </Link>
                 <a 
                   href="https://github.com/meadowclarence38/github-crypto-inspector" 

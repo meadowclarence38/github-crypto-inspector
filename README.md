@@ -2,9 +2,20 @@
 
 **Analyze cryptocurrency projects via their GitHub repositories.** Evaluate legitimacy, activity, and originality—and tell apart original projects from low-effort forks (e.g. token clones).
 
-- **Web app**: Paste a repo link, choose which checks to run, get a report (red flags, recommendations).
-- **PoW scan**: Detect Proof-of-Work algorithms (SHA-256, Ethash, RandomX, etc.) in the codebase.
-- **Optional Python CLI**: Full analyzer with Snyk, file-level diff, AI/ML scan, and charts.
+## 🚀 Version 2.0 - Advanced Analysis
+
+**New in V2.0:**
+- **🔀 Fork Originality Score**: Compute % unique code vs parent (flags lazy forks <20%)
+- **📊 Activity Dashboard**: Health metrics, commit charts, contributor analysis
+- **🛡️ Security Scans**: Issue tracking, vulnerability detection, code quality scores
+- **📈 Visual Charts**: Interactive commit history with Recharts
+- **Enhanced Innovation Score**: Multi-factor analysis combining originality, activity, and security
+
+**Features:**
+- **V2 Advanced Analysis** (`/v2/analyze`): Deep insights with fork detection, activity dashboards, security scans
+- **V1 Basic Analysis** (`/analyze`): Quick checks for activity, forks, and innovation scoring
+- **PoW Detection** (`/inspect`): Scan for Proof-of-Work algorithms (SHA-256, Ethash, RandomX, etc.)
+- **Optional Python CLI**: Full analyzer with Snyk, file-level diff, AI/ML scan
 
 ---
 
