@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --crypto-bg: #08080c;
+  --crypto-surface: #111118;
+  --crypto-border: #1e1e28;
+  --crypto-muted: #6b6b7b;
+  --crypto-accent: #a78bfa;
+  --crypto-gold: #e4a853;
+  --flag-red: #dc2626;
+  --flag-green: #16a34a;
+}
+
+body {
+  @apply bg-crypto-bg text-zinc-200 antialiased;
+}
