@@ -1,30 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --crypto-bg: #0a0b0e;
-  --crypto-surface: #13141a;
-  --crypto-border: #1f2029;
-  --crypto-muted: #71727d;
-  --crypto-accent: #8b7dd8;
-  --crypto-gold: #f4b461;
-  --flag-red: #ef4444;
-  --flag-green: #22c55e;
+@layer base {
+  :root {
+    --crypto-bg: #F9FAFB;
+    --crypto-surface: #FFFFFF;
+    --crypto-border: #E5E7EB;
+    --crypto-muted: #6B7280;
+    --crypto-accent: #3B82F6;
+  }
+
+  body {
+    @apply bg-crypto-bg text-crypto-text antialiased;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+
+  * {
+    @apply transition-colors duration-150;
+  }
 }
 
-body {
-  @apply bg-crypto-bg text-crypto-text antialiased;
-}
+@layer components {
+  .card {
+    @apply bg-crypto-surface border border-crypto-border rounded-lg shadow-card;
+  }
 
-* {
-  @apply transition-colors duration-200;
-}
+  .card-hover {
+    @apply hover:shadow-card-hover hover:border-crypto-borderDark;
+  }
 
-input[type="checkbox"] {
-  @apply cursor-pointer;
-}
+  .btn-primary {
+    @apply bg-crypto-accent text-white px-5 py-2.5 rounded-lg font-medium hover:bg-crypto-accentHover focus:ring-2 focus:ring-crypto-accent focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all;
+  }
 
-input[type="checkbox"]:checked {
-  @apply bg-crypto-accent border-crypto-accent;
+  .input-field {
+    @apply w-full px-4 py-3 border border-crypto-border rounded-lg bg-crypto-surface text-crypto-text placeholder-crypto-muted focus:outline-none focus:ring-2 focus:ring-crypto-accent focus:border-transparent;
+  }
+
+  input[type="checkbox"] {
+    @apply w-4 h-4 cursor-pointer rounded border-crypto-border text-crypto-accent focus:ring-2 focus:ring-crypto-accent focus:ring-offset-0;
+  }
 }
