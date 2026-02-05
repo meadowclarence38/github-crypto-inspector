@@ -3,16 +3,28 @@
 @tailwind utilities;
 
 :root {
-  --crypto-bg: #08080c;
-  --crypto-surface: #111118;
-  --crypto-border: #1e1e28;
-  --crypto-muted: #6b6b7b;
-  --crypto-accent: #a78bfa;
-  --crypto-gold: #e4a853;
-  --flag-red: #dc2626;
-  --flag-green: #16a34a;
+  --crypto-bg: #0a0b0e;
+  --crypto-surface: #13141a;
+  --crypto-border: #1f2029;
+  --crypto-muted: #71727d;
+  --crypto-accent: #8b7dd8;
+  --crypto-gold: #f4b461;
+  --flag-red: #ef4444;
+  --flag-green: #22c55e;
 }
 
 body {
-  @apply bg-crypto-bg text-zinc-200 antialiased;
+  @apply bg-crypto-bg text-crypto-text antialiased;
+}
+
+* {
+  @apply transition-colors duration-200;
+}
+
+input[type="checkbox"] {
+  @apply cursor-pointer;
+}
+
+input[type="checkbox"]:checked {
+  @apply bg-crypto-accent border-crypto-accent;
 }
