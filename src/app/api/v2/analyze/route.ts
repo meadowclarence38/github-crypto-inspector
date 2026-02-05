@@ -4,6 +4,8 @@ import { fetchRepoDetails } from "@/lib/octokit-client";
 import { analyzeFork } from "@/lib/analyzers/fork-analyzer";
 import { analyzeActivity } from "@/lib/analyzers/activity-analyzer";
 import { analyzeSecurity } from "@/lib/analyzers/security-analyzer";
+import { analyzeAICode } from "@/lib/analyzers/ai-code-analyzer";
+import { Octokit } from "@octokit/rest";
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -12,6 +14,7 @@ interface AnalysisOptions {
   forkAnalysis?: boolean;
   activityMetrics?: boolean;
   securityScan?: boolean;
+  aiCodeDetection?: boolean;
 }
 
 export async function POST(req: NextRequest) {
@@ -113,6 +116,26 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // AI Code Detection (V2.1 Feature)
+    if (options.aiCodeDetection) {
+      try {
+        const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN || "";
+        const octokit = new Octokit({ auth: token });
+        const aiCodeResult = await analyzeAICode(octokit, owner, repo);
+        analyses.aiCode = aiCodeResult;
+        
+        allFlags.push(...aiCodeResult.flags);
+        allRecommendations.push(...aiCodeResult.recommendations);
+        
+        if (aiCodeResult.aiGeneratedScore > 70) {
+          allFlags.push(`High AI-generated code likelihood (${aiCodeResult.aiGeneratedScore}/100) - possible low-effort project`);
+        }
+      } catch (error) {
+        console.error('AI code analysis error:', error);
+        analyses.aiCode = { error: 'AI code analysis failed' };
+      }
+    }
+
     // Compute overall innovation score (enhanced V2)
     let innovationScore = 50;
     
@@ -139,6 +162,13 @@ export async function POST(req: NextRequest) {
     const securityData = analyses.security as { securityScore?: number } | undefined;
     if (securityData?.securityScore) {
       innovationScore = Math.round((innovationScore + securityData.securityScore * 0.2));
+    }
+    
+    // AI code penalty (reduces innovation score)
+    const aiCodeData = analyses.aiCode as { aiGeneratedScore?: number } | undefined;
+    if (aiCodeData?.aiGeneratedScore) {
+      const aiPenalty = Math.round((aiCodeData.aiGeneratedScore / 100) * 25);
+      innovationScore -= aiPenalty;
     }
     
     innovationScore = Math.max(1, Math.min(100, innovationScore));

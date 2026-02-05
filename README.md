@@ -8,16 +8,19 @@
 - **🔀 Fork Originality Score**: Compute % unique code vs parent (flags lazy forks <20%)
 - **📊 Activity Dashboard**: Health metrics, commit charts, contributor analysis
 - **🛡️ Security Scans**: Issue tracking, vulnerability detection, code quality scores
+- **🤖 AI Code Detection**: Identify AI-generated code patterns and signatures
 - **📈 Visual Charts**: Interactive commit history with Recharts
 - **🔄 Batch Comparison**: Analyze multiple repos at once, compare side-by-side
 - **📥 Export**: Download results as CSV or JSON
-- **Enhanced Innovation Score**: Multi-factor analysis combining originality, activity, and security
+- **🔗 Shareable Links**: Auto-analyze repos from URL, one-click share
+- **Enhanced Innovation Score**: Multi-factor analysis combining originality, activity, security, and AI detection
 
 **Features:**
-- **V2 Advanced Analysis** (`/v2/analyze`): Deep insights with fork detection, activity dashboards, security scans
+- **V2 Advanced Analysis** (`/v2/analyze`): Deep insights with fork detection, activity dashboards, security scans, AI code detection
 - **Batch Comparison** (`/compare`): Paste multiple GitHub links, get side-by-side comparison table with export
 - **V1 Basic Analysis** (`/analyze`): Quick checks for activity, forks, and innovation scoring
 - **PoW Detection** (`/inspect`): Scan for Proof-of-Work algorithms (SHA-256, Ethash, RandomX, etc.)
+- **Shareable Links**: Share analysis results via URL (e.g., `/v2/analyze?repo=owner/repo`)
 - **Optional Python CLI**: Full analyzer with Snyk, file-level diff, AI/ML scan
 
 ---

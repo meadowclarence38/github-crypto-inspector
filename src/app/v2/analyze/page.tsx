@@ -61,6 +61,24 @@ interface AnalysisReport {
       flags: string[];
       recommendations: string[];
     };
+    aiCode?: {
+      aiGeneratedScore: number;
+      filesAnalyzed: number;
+      aiIndicators: {
+        aiSignatures: number;
+        suspiciousPatterns: number;
+        genericNaming: number;
+        verboseComments: number;
+        boilerplateHeavy: number;
+      };
+      detectedFiles: Array<{
+        path: string;
+        confidence: number;
+        reasons: string[];
+      }>;
+      flags: string[];
+      recommendations: string[];
+    };
   };
   innovationScore: number;
   redFlags: Array<{ severity: string; message: string }>;
@@ -82,6 +100,7 @@ function V2AnalyzeContent() {
     forkAnalysis: true,
     activityMetrics: true,
     securityScan: true,
+    aiCodeDetection: true,
   });
 
   // Auto-analyze if repo is in URL
@@ -191,7 +210,7 @@ function V2AnalyzeContent() {
           <h3 className="text-crypto-text text-sm font-semibold mb-4">
             Analysis Modules
           </h3>
-          <div className="grid sm:grid-cols-3 gap-4">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <label className="flex items-start gap-3 p-4 rounded-lg border border-crypto-border hover:border-crypto-borderDark cursor-pointer transition-all">
               <input
                 type="checkbox"
@@ -242,6 +261,24 @@ function V2AnalyzeContent() {
                 </div>
                 <p className="text-crypto-muted text-xs">
                   Vulnerabilities & code quality
+                </p>
+              </div>
+            </label>
+
+            <label className="flex items-start gap-3 p-4 rounded-lg border border-crypto-border hover:border-crypto-borderDark cursor-pointer transition-all">
+              <input
+                type="checkbox"
+                checked={options.aiCodeDetection}
+                onChange={(e) =>
+                  setOptions({ ...options, aiCodeDetection: e.target.checked })
+                }
+              />
+              <div>
+                <div className="text-crypto-text text-sm font-medium mb-1">
+                  🤖 AI Code Detection
+                </div>
+                <p className="text-crypto-muted text-xs">
+                  Detect AI-generated code patterns
                 </p>
               </div>
             </label>
@@ -647,6 +684,149 @@ function V2AnalyzeContent() {
                             {issue.state}
                           </span>
                         </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* AI Code Detection */}
+          {report.analyses.aiCode && (
+            <div className="card p-6">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-2 rounded-lg bg-crypto-accent/10 text-crypto-accent">
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <div className="flex-1">
+                  <h2 className="text-crypto-text text-lg font-bold">AI Code Detection</h2>
+                  <p className="text-crypto-muted text-sm">
+                    AI-Generated Score: {report.analyses.aiCode.aiGeneratedScore}/100
+                  </p>
+                </div>
+                <div
+                  className={`px-4 py-2 rounded-lg font-semibold text-sm ${
+                    report.analyses.aiCode.aiGeneratedScore >= 70
+                      ? "bg-crypto-danger/10 text-crypto-danger border border-crypto-danger/30"
+                      : report.analyses.aiCode.aiGeneratedScore >= 40
+                      ? "bg-crypto-warning/10 text-crypto-warning border border-crypto-warning/30"
+                      : "bg-crypto-success/10 text-crypto-success border border-crypto-success/30"
+                  }`}
+                >
+                  {report.analyses.aiCode.aiGeneratedScore >= 70
+                    ? "High AI Risk"
+                    : report.analyses.aiCode.aiGeneratedScore >= 40
+                    ? "Moderate AI"
+                    : "Human Code"}
+                </div>
+              </div>
+
+              {/* AI Indicators Grid */}
+              <div className="grid sm:grid-cols-3 gap-4 mb-6">
+                <div className="p-4 rounded-lg bg-crypto-surfaceHover border border-crypto-border">
+                  <div className="text-xs text-crypto-muted mb-1">Files Analyzed</div>
+                  <div className="text-2xl font-bold text-crypto-text">
+                    {report.analyses.aiCode.filesAnalyzed}
+                  </div>
+                </div>
+
+                <div className="p-4 rounded-lg bg-crypto-surfaceHover border border-crypto-border">
+                  <div className="text-xs text-crypto-muted mb-1">AI Signatures</div>
+                  <div className={`text-2xl font-bold ${
+                    report.analyses.aiCode.aiIndicators.aiSignatures > 0
+                      ? "text-crypto-danger"
+                      : "text-crypto-success"
+                  }`}>
+                    {report.analyses.aiCode.aiIndicators.aiSignatures}
+                  </div>
+                  <div className="text-xs text-crypto-textDim mt-2">
+                    Explicit AI markers
+                  </div>
+                </div>
+
+                <div className="p-4 rounded-lg bg-crypto-surfaceHover border border-crypto-border">
+                  <div className="text-xs text-crypto-muted mb-1">Pattern Matches</div>
+                  <div className="text-2xl font-bold text-crypto-text">
+                    {report.analyses.aiCode.aiIndicators.suspiciousPatterns +
+                     report.analyses.aiCode.aiIndicators.genericNaming +
+                     report.analyses.aiCode.aiIndicators.verboseComments}
+                  </div>
+                  <div className="text-xs text-crypto-textDim mt-2">
+                    AI-like patterns
+                  </div>
+                </div>
+              </div>
+
+              {/* Detailed Breakdown */}
+              <div className="mb-6">
+                <h3 className="text-crypto-text text-sm font-semibold mb-3">
+                  Detection Breakdown
+                </h3>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between p-3 rounded-lg bg-crypto-surfaceHover">
+                    <span className="text-crypto-muted text-sm">Suspicious Patterns</span>
+                    <span className="text-crypto-text font-medium text-sm">
+                      {report.analyses.aiCode.aiIndicators.suspiciousPatterns} files
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between p-3 rounded-lg bg-crypto-surfaceHover">
+                    <span className="text-crypto-muted text-sm">Generic Naming</span>
+                    <span className="text-crypto-text font-medium text-sm">
+                      {report.analyses.aiCode.aiIndicators.genericNaming} files
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between p-3 rounded-lg bg-crypto-surfaceHover">
+                    <span className="text-crypto-muted text-sm">Verbose Comments</span>
+                    <span className="text-crypto-text font-medium text-sm">
+                      {report.analyses.aiCode.aiIndicators.verboseComments} files
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between p-3 rounded-lg bg-crypto-surfaceHover">
+                    <span className="text-crypto-muted text-sm">Boilerplate Heavy</span>
+                    <span className="text-crypto-text font-medium text-sm">
+                      {report.analyses.aiCode.aiIndicators.boilerplateHeavy} files
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Flagged Files */}
+              {report.analyses.aiCode.detectedFiles.length > 0 && (
+                <div>
+                  <h3 className="text-crypto-text text-sm font-semibold mb-3">
+                    Flagged Files ({report.analyses.aiCode.detectedFiles.length})
+                  </h3>
+                  <div className="space-y-3 max-h-80 overflow-y-auto pr-2">
+                    {report.analyses.aiCode.detectedFiles.slice(0, 15).map((file, idx) => (
+                      <div
+                        key={idx}
+                        className="p-4 rounded-lg bg-crypto-surfaceHover border border-crypto-border hover:border-crypto-borderDark transition-colors"
+                      >
+                        <div className="flex items-start justify-between gap-3 mb-3">
+                          <code className="text-crypto-accent text-xs font-mono flex-1 break-all">
+                            {file.path}
+                          </code>
+                          <span className={`px-2 py-1 rounded text-xs font-semibold whitespace-nowrap ${
+                            file.confidence >= 70
+                              ? "bg-crypto-danger/10 text-crypto-danger border border-crypto-danger/30"
+                              : file.confidence >= 40
+                              ? "bg-crypto-warning/10 text-crypto-warning border border-crypto-warning/30"
+                              : "bg-crypto-muted/10 text-crypto-muted"
+                          }`}>
+                            {file.confidence}% confident
+                          </span>
+                        </div>
+                        <ul className="space-y-1.5">
+                          {file.reasons.map((reason, i) => (
+                            <li key={i} className="text-crypto-muted text-xs flex items-start gap-2">
+                              <span className="text-crypto-accent mt-0.5">•</span>
+                              <span className="flex-1">{reason}</span>
+                            </li>
+                          ))}
+                        </ul>
                       </div>
                     ))}
                   </div>
