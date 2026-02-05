@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { parseRepoInput } from "@/lib/github";
-import { fetchRepoDetails } from "@/lib/octokit-client";
+import { fetchRepoDetails, fetchOwnerDetails } from "@/lib/octokit-client";
 import { analyzeFork } from "@/lib/analyzers/fork-analyzer";
 import { analyzeActivity } from "@/lib/analyzers/activity-analyzer";
 import { analyzeSecurity } from "@/lib/analyzers/security-analyzer";
@@ -32,10 +32,14 @@ export async function POST(req: NextRequest) {
     }
     const [owner, repo] = parsed;
 
-    // Fetch basic repo details
+    // Fetch basic repo details and owner information in parallel
     let repoData;
+    let ownerData;
     try {
-      repoData = await fetchRepoDetails(owner, repo);
+      [repoData, ownerData] = await Promise.all([
+        fetchRepoDetails(owner, repo),
+        fetchOwnerDetails(owner),
+      ]);
     } catch (error: unknown) {
       if (error && typeof error === 'object' && 'status' in error && error.status === 403) {
         return NextResponse.json(
@@ -196,6 +200,21 @@ export async function POST(req: NextRequest) {
         forks: repoData.forks_count,
         created_at: repoData.created_at,
         updated_at: repoData.updated_at,
+      },
+      owner: {
+        login: ownerData.login,
+        type: ownerData.type,
+        name: ownerData.name,
+        avatar_url: ownerData.avatar_url,
+        html_url: ownerData.html_url,
+        bio: ownerData.bio,
+        location: ownerData.location,
+        company: ownerData.company,
+        blog: ownerData.blog,
+        public_repos: ownerData.public_repos,
+        followers: ownerData.followers,
+        following: ownerData.following,
+        created_at: ownerData.created_at,
       },
       analyses,
       innovationScore,

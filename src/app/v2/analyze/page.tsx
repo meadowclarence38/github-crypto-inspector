@@ -26,6 +26,21 @@ interface AnalysisReport {
     created_at: string;
     updated_at: string;
   };
+  owner: {
+    login: string;
+    type: "User" | "Organization";
+    name: string | null;
+    avatar_url: string;
+    html_url: string;
+    bio: string | null;
+    location: string | null;
+    company: string | null;
+    blog: string | null;
+    public_repos: number;
+    followers: number;
+    following: number;
+    created_at: string;
+  };
   analyses: {
     fork?: {
       isFork: boolean;
@@ -390,6 +405,45 @@ function V2AnalyzeContent() {
                     {report.repo.description}
                   </p>
                 )}
+
+                {/* Owner Info */}
+                {report.owner && (
+                  <div className="flex items-center gap-4 mt-4 p-4 rounded-lg bg-crypto-surfaceHover border border-crypto-border">
+                    <img
+                      src={report.owner.avatar_url}
+                      alt={report.owner.login}
+                      className="w-10 h-10 rounded-full"
+                    />
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <a
+                          href={report.owner.html_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-crypto-text text-sm font-semibold hover:text-crypto-accent transition-colors"
+                        >
+                          {report.owner.name || report.owner.login}
+                        </a>
+                        <span
+                          className={`px-2 py-0.5 rounded text-xs font-semibold ${
+                            report.owner.type === "Organization"
+                              ? "bg-crypto-accent/10 text-crypto-accent border border-crypto-accent/30"
+                              : "bg-crypto-success/10 text-crypto-success border border-crypto-success/30"
+                          }`}
+                        >
+                          {report.owner.type === "Organization" ? "🏢 Org" : "👤 Individual"}
+                        </span>
+                      </div>
+                      <div className="flex flex-wrap gap-3 text-xs text-crypto-muted">
+                        {report.owner.location && <span>📍 {report.owner.location}</span>}
+                        {report.owner.company && <span>🏢 {report.owner.company}</span>}
+                        <span>📦 {report.owner.public_repos} repos</span>
+                        <span>👥 {report.owner.followers.toLocaleString()} followers</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 <div className="flex flex-wrap gap-4 mt-4 text-sm text-crypto-muted">
                   {report.repo.language && <span>📝 {report.repo.language}</span>}
                   <span>⭐ {report.repo.stars.toLocaleString()} stars</span>

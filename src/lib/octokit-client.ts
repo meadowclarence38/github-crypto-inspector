@@ -7,6 +7,23 @@ export const octokit = new Octokit({
   userAgent: 'github-crypto-inspector/2.0',
 });
 
+export interface GitHubOwner {
+  login: string;
+  type: "User" | "Organization";
+  name: string | null;
+  company: string | null;
+  blog: string | null;
+  location: string | null;
+  email: string | null;
+  bio: string | null;
+  public_repos: number;
+  followers: number;
+  following: number;
+  created_at: string;
+  avatar_url: string;
+  html_url: string;
+}
+
 export interface GitHubRepo {
   owner: string;
   repo: string;
@@ -281,4 +298,32 @@ export async function checkVulnerabilities(owner: string, repo: string): Promise
   } catch {}
   
   return checks;
+}
+
+/**
+ * Fetch detailed owner information (User or Organization)
+ */
+export async function fetchOwnerDetails(
+  owner: string
+): Promise<GitHubOwner> {
+  const { data } = await octokit.users.getByUsername({
+    username: owner,
+  });
+
+  return {
+    login: data.login,
+    type: data.type as "User" | "Organization",
+    name: data.name,
+    company: data.company,
+    blog: data.blog,
+    location: data.location,
+    email: data.email,
+    bio: data.bio,
+    public_repos: data.public_repos,
+    followers: data.followers,
+    following: data.following,
+    created_at: data.created_at,
+    avatar_url: data.avatar_url,
+    html_url: data.html_url,
+  };
 }
