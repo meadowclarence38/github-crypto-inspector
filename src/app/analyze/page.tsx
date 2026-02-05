@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 
 const OPTIONS = [
@@ -56,12 +57,23 @@ function ScoreRing({ score }: { score: number }) {
   );
 }
 
-export default function AnalyzePage() {
-  const [repoInput, setRepoInput] = useState("");
+function AnalyzeContent() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const repoFromUrl = searchParams.get("repo") || "";
+  
+  const [repoInput, setRepoInput] = useState(repoFromUrl);
   const [selected, setSelected] = useState<Set<string>>(new Set(OPTIONS.map((o) => o.id)));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [report, setReport] = useState<Report | null>(null);
+
+  useEffect(() => {
+    if (repoFromUrl && !loading && !report && !error) {
+      runAnalysis(repoFromUrl);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const toggle = (id: string) => {
     setSelected((prev) => {
@@ -75,12 +87,7 @@ export default function AnalyzePage() {
   const selectAll = () => setSelected(new Set(OPTIONS.map((o) => o.id)));
   const deselectAll = () => setSelected(new Set());
 
-  const run = async () => {
-    const repo = repoInput.trim();
-    if (!repo) {
-      setError("Enter a repo URL or owner/repo");
-      return;
-    }
+  const runAnalysis = async (repo: string) => {
     setError(null);
     setReport(null);
     setLoading(true);
@@ -93,11 +100,23 @@ export default function AnalyzePage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Analysis failed");
       setReport(data);
+      
+      const repoParam = repo.replace("https://github.com/", "").replace(/\/+$/, "");
+      router.push(`/analyze?repo=${encodeURIComponent(repoParam)}`, { scroll: false });
     } catch (e) {
       setError(e instanceof Error ? e.message : "Request failed");
     } finally {
       setLoading(false);
     }
+  };
+
+  const run = async () => {
+    const repo = repoInput.trim();
+    if (!repo) {
+      setError("Enter a repo URL or owner/repo");
+      return;
+    }
+    runAnalysis(repo);
   };
 
   return (
@@ -382,5 +401,20 @@ export default function AnalyzePage() {
         )}
       </div>
     </main>
+  );
+}
+
+export default function AnalyzePage() {
+  return (
+    <Suspense fallback={
+      <main className="min-h-screen bg-crypto-bg text-zinc-200 p-6">
+        <div className="flex items-center gap-3">
+          <div className="w-2 h-2 rounded-full bg-crypto-accent animate-pulse-soft"></div>
+          <p className="text-crypto-muted">Loading...</p>
+        </div>
+      </main>
+    }>
+      <AnalyzeContent />
+    </Suspense>
   );
 }

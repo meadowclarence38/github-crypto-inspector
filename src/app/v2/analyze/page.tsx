@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   LineChart,
@@ -67,8 +68,12 @@ interface AnalysisReport {
   timestamp: string;
 }
 
-export default function V2AnalyzePage() {
-  const [repoInput, setRepoInput] = useState("");
+function V2AnalyzeContent() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const repoFromUrl = searchParams.get("repo") || "";
+  
+  const [repoInput, setRepoInput] = useState(repoFromUrl);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [report, setReport] = useState<AnalysisReport | null>(null);
@@ -79,12 +84,15 @@ export default function V2AnalyzePage() {
     securityScan: true,
   });
 
-  const run = async () => {
-    const repo = repoInput.trim();
-    if (!repo) {
-      setError("Enter a repo URL or owner/repo");
-      return;
+  // Auto-analyze if repo is in URL
+  useEffect(() => {
+    if (repoFromUrl && !loading && !report && !error) {
+      runAnalysis(repoFromUrl);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const runAnalysis = async (repo: string) => {
     setError(null);
     setReport(null);
     setLoading(true);
@@ -97,11 +105,31 @@ export default function V2AnalyzePage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Analysis failed");
       setReport(data);
+      
+      // Update URL for sharing
+      const repoParam = repo.replace("https://github.com/", "").replace(/\/+$/, "");
+      router.push(`/v2/analyze?repo=${encodeURIComponent(repoParam)}`, { scroll: false });
     } catch (e) {
       setError(e instanceof Error ? e.message : "Request failed");
     } finally {
       setLoading(false);
     }
+  };
+
+  const run = async () => {
+    const repo = repoInput.trim();
+    if (!repo) {
+      setError("Enter a repo URL or owner/repo");
+      return;
+    }
+    runAnalysis(repo);
+  };
+
+  const copyShareLink = () => {
+    if (!report) return;
+    const url = window.location.href;
+    navigator.clipboard.writeText(url);
+    alert("Shareable link copied to clipboard!");
   };
 
   const getScoreColor = (score: number) => {
@@ -220,12 +248,13 @@ export default function V2AnalyzePage() {
           </div>
         </div>
 
-        <button
-          type="button"
-          onClick={run}
-          disabled={loading}
-          className="btn-primary w-full py-4 text-base flex items-center justify-center gap-2"
-        >
+          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={run}
+              disabled={loading}
+              className="btn-primary flex-1 py-4 text-base flex items-center justify-center gap-2"
+            >
           {loading ? (
             <>
               <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
@@ -256,10 +285,24 @@ export default function V2AnalyzePage() {
                 />
               </svg>
               <span>Run Analysis</span>
-            </>
-          )}
-        </button>
-      </div>
+              </>
+            )}
+            </button>
+            
+            {report && (
+              <button
+                onClick={copyShareLink}
+                className="px-6 py-4 rounded-lg border border-crypto-border text-crypto-text hover:bg-crypto-surfaceHover font-medium text-sm flex items-center gap-2"
+                title="Copy shareable link"
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                </svg>
+                Share
+              </button>
+            )}
+          </div>
+        </div>
 
       {error && (
         <div className="mt-6 card p-4 border-crypto-danger bg-crypto-dangerLight flex items-start gap-3">
@@ -677,5 +720,20 @@ export default function V2AnalyzePage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function V2AnalyzePage() {
+  return (
+    <Suspense fallback={
+      <div className="max-w-6xl mx-auto px-6 py-12">
+        <div className="flex items-center gap-3">
+          <div className="w-2 h-2 rounded-full bg-crypto-accent animate-pulse-soft"></div>
+          <p className="text-crypto-muted">Loading...</p>
+        </div>
+      </div>
+    }>
+      <V2AnalyzeContent />
+    </Suspense>
   );
 }
