@@ -59,6 +59,24 @@ export default function HomePage() {
             </p>
           </Link>
 
+          {/* Batch Comparison Card */}
+          <Link href="/compare" className="group card card-hover p-8 transition-all animate-slide-up">
+            <div className="flex items-start justify-between mb-4">
+              <div className="p-3 rounded-lg bg-crypto-success/10 text-crypto-success">
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                </svg>
+              </div>
+              <svg className="w-5 h-5 text-crypto-muted group-hover:text-crypto-accent group-hover:translate-x-1 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </div>
+            <h2 className="text-xl font-semibold text-crypto-text mb-2">Batch Comparison</h2>
+            <p className="text-crypto-muted text-sm leading-relaxed">
+              Analyze multiple repos at once. Compare side-by-side in a table and export to CSV/JSON.
+            </p>
+          </Link>
+
           {/* Quick PoW Inspect Card */}
           <Link href="/inspect" className="group card card-hover p-8 transition-all animate-slide-up">
             <div className="flex items-start justify-between mb-4">
@@ -79,15 +97,15 @@ export default function HomePage() {
         </div>
 
         {/* Features Grid */}
-        <div className="grid sm:grid-cols-3 gap-6 mb-12">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           <div className="card p-6 text-center">
             <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-crypto-success/10 text-crypto-success mb-3">
               <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <h3 className="font-semibold text-crypto-text mb-1">Legitimacy Check</h3>
-            <p className="text-crypto-muted text-sm">Identify forks vs. originals and detect pump-and-dump patterns</p>
+            <h3 className="font-semibold text-crypto-text mb-1">Fork Detection</h3>
+            <p className="text-crypto-muted text-sm">Originality scoring with lazy fork detection</p>
           </div>
           <div className="card p-6 text-center">
             <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-crypto-accent/10 text-crypto-accent mb-3">
@@ -95,8 +113,8 @@ export default function HomePage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
               </svg>
             </div>
-            <h3 className="font-semibold text-crypto-text mb-1">Activity Tracking</h3>
-            <p className="text-crypto-muted text-sm">Monitor commit frequency, contributors, and project momentum</p>
+            <h3 className="font-semibold text-crypto-text mb-1">Activity Charts</h3>
+            <p className="text-crypto-muted text-sm">Visual commit history and health metrics</p>
           </div>
           <div className="card p-6 text-center">
             <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-crypto-warning/10 text-crypto-warning mb-3">
@@ -104,8 +122,17 @@ export default function HomePage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
             </div>
-            <h3 className="font-semibold text-crypto-text mb-1">Red Flag Detection</h3>
-            <p className="text-crypto-muted text-sm">Automatic alerts for security issues and suspicious patterns</p>
+            <h3 className="font-semibold text-crypto-text mb-1">Security Scan</h3>
+            <p className="text-crypto-muted text-sm">Vulnerability detection and security scoring</p>
+          </div>
+          <div className="card p-6 text-center">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-crypto-textDim/10 text-crypto-textDim mb-3">
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              </svg>
+            </div>
+            <h3 className="font-semibold text-crypto-text mb-1">Batch Compare</h3>
+            <p className="text-crypto-muted text-sm">Analyze multiple repos with CSV export</p>
           </div>
         </div>
 

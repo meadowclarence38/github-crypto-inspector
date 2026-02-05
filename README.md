@@ -9,10 +9,13 @@
 - **📊 Activity Dashboard**: Health metrics, commit charts, contributor analysis
 - **🛡️ Security Scans**: Issue tracking, vulnerability detection, code quality scores
 - **📈 Visual Charts**: Interactive commit history with Recharts
+- **🔄 Batch Comparison**: Analyze multiple repos at once, compare side-by-side
+- **📥 Export**: Download results as CSV or JSON
 - **Enhanced Innovation Score**: Multi-factor analysis combining originality, activity, and security
 
 **Features:**
 - **V2 Advanced Analysis** (`/v2/analyze`): Deep insights with fork detection, activity dashboards, security scans
+- **Batch Comparison** (`/compare`): Paste multiple GitHub links, get side-by-side comparison table with export
 - **V1 Basic Analysis** (`/analyze`): Quick checks for activity, forks, and innovation scoring
 - **PoW Detection** (`/inspect`): Scan for Proof-of-Work algorithms (SHA-256, Ethash, RandomX, etc.)
 - **Optional Python CLI**: Full analyzer with Snyk, file-level diff, AI/ML scan

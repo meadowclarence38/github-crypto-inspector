@@ -70,15 +70,46 @@ function InspectContent() {
 
   if (!owner || !repo) {
     return (
-      <main className="min-h-screen bg-crypto-bg p-6 flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-crypto-muted mb-4">Missing repository information</p>
-          <Link href="/" className="inline-flex items-center gap-2 text-crypto-accent hover:text-crypto-accentLight group">
+      <main className="min-h-screen bg-crypto-bg p-6">
+        <div className="max-w-2xl mx-auto">
+          <Link href="/" className="inline-flex items-center gap-2 text-crypto-muted hover:text-crypto-accent text-sm font-medium group mb-8">
             <svg className="w-4 h-4 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
-            Return Home
+            Back to Home
           </Link>
+
+          <h1 className="text-4xl font-bold text-crypto-text mb-3">PoW Algorithm Inspector</h1>
+          <p className="text-crypto-textDim text-base mb-8">Quick scan for Proof-of-Work algorithm signatures</p>
+
+          <div className="card p-6">
+            <h3 className="text-crypto-text text-sm font-semibold mb-4">Enter Repository</h3>
+            <form action="/inspect" method="GET" className="space-y-4">
+              <div className="flex gap-3">
+                <input
+                  type="text"
+                  name="owner"
+                  placeholder="repository owner"
+                  required
+                  className="input-field flex-1"
+                />
+                <span className="self-center text-crypto-muted font-mono text-lg">/</span>
+                <input
+                  type="text"
+                  name="repo"
+                  placeholder="repository name"
+                  required
+                  className="input-field flex-1"
+                />
+              </div>
+              <button type="submit" className="btn-primary w-full py-3">
+                Inspect Repository
+              </button>
+            </form>
+            <p className="text-crypto-muted text-xs mt-4">
+              Example: <a href="/inspect?owner=bitcoin&repo=bitcoin" className="text-crypto-accent hover:underline">bitcoin/bitcoin</a>
+            </p>
+          </div>
         </div>
       </main>
     );
